@@ -86,3 +86,11 @@ tokens() {
   CHECKER=$(token "$CHECKER_SUB")
   DEVICE=$(token "$DEVICE_SUB")
 }
+
+# Payroll reads closed days from its own Kafka-fed copy, and approval sends a run back to DRAFT if that copy moved
+# after the run started. Scripts wait for it to catch up first; peeking at the database is a demo/bench shortcut.
+payroll_days_behind() {
+  docker compose -p payrollforge exec -T db psql -U payrollforge -d payrollforge -tAc \
+    "select count(*) from attendance_day a left join payroll_day p using (employee_id, day)
+     where p.version is distinct from a.version"
+}

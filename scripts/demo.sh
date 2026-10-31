@@ -65,6 +65,7 @@ check "Asha approves Ravi's broadband claim" "$(expect 200 "$ASHA_T" POST "/v1/r
 
 echo "== 4. Payroll for $PERIOD: maker computes, checker approves"
 KEY=$(uuid)
+until_eq 120 0 payroll_days_behind > /dev/null
 run=$(expect 201 "$MAKER" POST /v1/payroll-runs "{\"period\":\"$PERIOD\"}" -H "Idempotency-Key: $KEY" | jq -r .id)
 retry=$(expect 200 "$MAKER" POST /v1/payroll-runs "{\"period\":\"$PERIOD\"}" -H "Idempotency-Key: $KEY" | jq -r .id)
 check "retrying the create with the same key returns the same run" "$retry" "$run"
