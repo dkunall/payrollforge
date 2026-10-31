@@ -69,14 +69,16 @@ public class PayslipService {
     }
 
     public Payslip get(Caller caller, UUID runId, UUID employee) {
-        var run = computedRun(runId);
         boolean staff = caller.hasAny(Role.HR, Role.PAYROLL_MAKER, Role.PAYROLL_CHECKER);
         if (!staff) {
+            // an employee learns nothing about a run until it is settled, not even that it exists
             caller.requireSelfOr(employee);
-            if (!RunStatus.SETTLED.contains(run.status())) {
-                throw ApiException.notFound("payslip");
-            }
+            var run = store.run(runId).filter(r -> RunStatus.SETTLED.contains(r.status()))
+                    .orElseThrow(() -> ApiException.notFound("payslip"));
+            var p = store.payslip(runId, employee).orElseThrow(() -> ApiException.notFound("payslip"));
+            return view(run, p);
         }
+        var run = computedRun(runId);
         var p = store.payslip(runId, employee).orElseThrow(() -> ApiException.notFound("payslip"));
         return view(run, p);
     }
