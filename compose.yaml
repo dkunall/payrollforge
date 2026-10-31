@@ -1,0 +1,92 @@
+name: payrollforge
+
+# Secrets come from an env file that scripts/up.sh generates outside the repo; nothing here has a default.
+# Published ports bind to 127.0.0.1 only: 8880 API, 8881 token issuer (stand-in IdP), 8882 object store (S3 API).
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: payrollforge
+      POSTGRES_USER: payrollforge
+      POSTGRES_PASSWORD: ${PAYROLLFORGE_DB_PASSWORD:?run scripts/up.sh or set PAYROLLFORGE_DB_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U payrollforge -d payrollforge"]
+      interval: 3s
+      retries: 40
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  kafka:
+    image: apache/kafka:3.8.0
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_HEAP_OPTS: -Xmx384m -Xms384m
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 > /dev/null"]
+      interval: 5s
+      timeout: 10s
+      retries: 30
+    volumes:
+      - kafka:/var/lib/kafka/data
+
+  # S3-compatible store for payslip PDFs and bank files.
+  objects:
+    image: rustfs/rustfs:1.0.4
+    environment:
+      RUSTFS_ACCESS_KEY: ${PAYROLLFORGE_S3_ACCESS_KEY:?set PAYROLLFORGE_S3_ACCESS_KEY}
+      RUSTFS_SECRET_KEY: ${PAYROLLFORGE_S3_SECRET_KEY:?set PAYROLLFORGE_S3_SECRET_KEY}
+    ports:
+      - "127.0.0.1:8882:9000"
+    volumes:
+      - objects:/data
+
+  # Stand-in identity provider: any client_id becomes the token subject. Demo only.
+  oauth:
+    image: ghcr.io/navikt/mock-oauth2-server:2.1.10
+    environment:
+      SERVER_PORT: 8080
+    ports:
+      - "127.0.0.1:8881:8080"
+
+  app:
+    build: .
+    image: payrollforge:local
+    restart: on-failure:3
+    depends_on:
+      db: { condition: service_healthy }
+      kafka: { condition: service_healthy }
+      objects: { condition: service_started }
+      oauth: { condition: service_started }
+    environment:
+      PAYROLLFORGE_PORT: 8880
+      PAYROLLFORGE_DB_URL: jdbc:postgresql://db:5432/payrollforge
+      PAYROLLFORGE_DB_PASSWORD: ${PAYROLLFORGE_DB_PASSWORD}
+      PAYROLLFORGE_KAFKA: kafka:9092
+      PAYROLLFORGE_ISSUER: http://oauth:8080/payrollforge
+      PAYROLLFORGE_FIELD_KEY: ${PAYROLLFORGE_FIELD_KEY:?set PAYROLLFORGE_FIELD_KEY}
+      PAYROLLFORGE_S3_ENDPOINT: http://objects:9000
+      PAYROLLFORGE_S3_ACCESS_KEY: ${PAYROLLFORGE_S3_ACCESS_KEY}
+      PAYROLLFORGE_S3_SECRET_KEY: ${PAYROLLFORGE_S3_SECRET_KEY}
+      PAYROLLFORGE_HR_SUBJECTS: ${PAYROLLFORGE_HR_SUBJECTS:-hr@payrollforge.example.test}
+      PAYROLLFORGE_MAKER_SUBJECTS: ${PAYROLLFORGE_MAKER_SUBJECTS:-maker@payrollforge.example.test}
+      PAYROLLFORGE_CHECKER_SUBJECTS: ${PAYROLLFORGE_CHECKER_SUBJECTS:-checker@payrollforge.example.test}
+      PAYROLLFORGE_DEVICE_SUBJECTS: ${PAYROLLFORGE_DEVICE_SUBJECTS:-terminal-blr@payrollforge.example.test}
+      JAVA_TOOL_OPTIONS: -Xmx640m -XX:+ExitOnOutOfMemoryError
+    ports:
+      - "127.0.0.1:8880:8880"
+
+volumes:
+  db:
+  kafka:
+  objects:

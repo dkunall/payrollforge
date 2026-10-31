@@ -1,5 +1,5 @@
-target/
-.git/
+target
+.git
+.github
+docs
 *.env
-.env*
-.idea/
