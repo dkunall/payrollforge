@@ -125,6 +125,14 @@ class PayrollRunIT extends ItBase {
 
         // the PDF renders in the background; the employee sees the payslip once the run is settled
         eventually(() -> slip(jan, steady).path("pdfReady").asBoolean());
+        eventually(() -> {
+            JsonNode all = maker().get(RUNS + "/" + jan + "/payslips").expect(200).body();
+            boolean ready = true;
+            for (JsonNode p : all) {
+                ready &= p.path("pdfReady").asBoolean();
+            }
+            return ready && all.size() > 0;
+        });
         var pdf = maker().get(RUNS + "/" + jan + "/payslips/" + steady.id() + "/pdf").expect(200);
         assertThat(pdf.header("Content-Type")).startsWith("application/pdf");
         assertThat(pdf.body().asText()).startsWith("%PDF");

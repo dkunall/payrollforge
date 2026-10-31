@@ -33,7 +33,7 @@ public class PayslipService {
             RunStatus.PAID);
 
     public record Summary(UUID employeeId, String code, String name, BigDecimal gross, BigDecimal deductions,
-                          BigDecimal net) {
+                          BigDecimal net, String payableDays, String periodDays, boolean pdfReady) {
     }
 
     public record Payslip(UUID runId, String period, RunStatus runStatus, UUID employeeId, String code, String name,
@@ -65,7 +65,8 @@ public class PayslipService {
         caller.require(Role.HR, Role.PAYROLL_MAKER, Role.PAYROLL_CHECKER);
         computedRun(runId);
         return store.payslips(runId).stream()
-                .map(p -> new Summary(p.employeeId(), p.code(), p.name(), p.gross(), p.deductions(), p.net())).toList();
+                .map(p -> new Summary(p.employeeId(), p.code(), p.name(), p.gross(), p.deductions(), p.net(),
+                        p.inputs().get("PAYABLE_DAYS"), p.inputs().get("PERIOD_DAYS"), p.pdfKey() != null)).toList();
     }
 
     public Payslip get(Caller caller, UUID runId, UUID employee) {
