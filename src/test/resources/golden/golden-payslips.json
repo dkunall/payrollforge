@@ -1,0 +1,410 @@
+[
+  {
+    "name": "std-full-month-new-regime",
+    "structure": "STD",
+    "regime": "NEW",
+    "declared": "0",
+    "inputs": {
+      "CTC_ANNUAL": "1200000",
+      "CTC_MONTHLY": "100000.00",
+      "PERIOD_DAYS": "30",
+      "PAYABLE_DAYS": "30",
+      "LOP_DAYS": "0",
+      "ENCASH_DAYS": "0",
+      "REIMBURSEMENT": "0",
+      "MONTHS_LEFT_IN_FY": "12",
+      "YTD_TAXABLE": "0",
+      "YTD_TDS": "0"
+    },
+    "expected": {
+      "lines": {
+        "BASIC": "40000.00",
+        "HRA": "20000.00",
+        "SPECIAL": "38200.00",
+        "LEAVE_ENCASH": "0.00",
+        "ARREARS_PAY": "0.00",
+        "REIMB": "0.00",
+        "PF": "1800.00",
+        "ESI": "0.00",
+        "PT": "200.00",
+        "ARREARS_DED": "0.00",
+        "TDS": "4363.00"
+      },
+      "gross": "98200.00",
+      "deductions": "6363.00",
+      "net": "91837.00",
+      "arrears": []
+    }
+  },
+  {
+    "name": "std-two-lop-days",
+    "structure": "STD",
+    "regime": "NEW",
+    "declared": "0",
+    "inputs": {
+      "CTC_ANNUAL": "1200000",
+      "CTC_MONTHLY": "100000.00",
+      "PERIOD_DAYS": "30",
+      "PAYABLE_DAYS": "28",
+      "LOP_DAYS": "2",
+      "ENCASH_DAYS": "0",
+      "REIMBURSEMENT": "0",
+      "MONTHS_LEFT_IN_FY": "12",
+      "YTD_TAXABLE": "0",
+      "YTD_TDS": "0"
+    },
+    "expected": {
+      "lines": {
+        "BASIC": "37333.00",
+        "HRA": "18667.00",
+        "SPECIAL": "35533.00",
+        "LEAVE_ENCASH": "0.00",
+        "ARREARS_PAY": "0.00",
+        "REIMB": "0.00",
+        "PF": "1800.00",
+        "ESI": "0.00",
+        "PT": "200.00",
+        "ARREARS_DED": "0.00",
+        "TDS": "3669.00"
+      },
+      "gross": "91533.00",
+      "deductions": "5669.00",
+      "net": "85864.00",
+      "arrears": []
+    }
+  },
+  {
+    "name": "std-old-regime-with-declarations",
+    "structure": "STD",
+    "regime": "OLD",
+    "declared": "150000",
+    "inputs": {
+      "CTC_ANNUAL": "600000",
+      "CTC_MONTHLY": "50000.00",
+      "PERIOD_DAYS": "31",
+      "PAYABLE_DAYS": "31",
+      "LOP_DAYS": "0",
+      "ENCASH_DAYS": "0",
+      "REIMBURSEMENT": "0",
+      "MONTHS_LEFT_IN_FY": "12",
+      "YTD_TAXABLE": "0",
+      "YTD_TDS": "0"
+    },
+    "expected": {
+      "lines": {
+        "BASIC": "20000.00",
+        "HRA": "10000.00",
+        "SPECIAL": "18200.00",
+        "LEAVE_ENCASH": "0.00",
+        "ARREARS_PAY": "0.00",
+        "REIMB": "0.00",
+        "PF": "1800.00",
+        "ESI": "0.00",
+        "PT": "200.00",
+        "ARREARS_DED": "0.00",
+        "TDS": "556.00"
+      },
+      "gross": "48200.00",
+      "deductions": "2556.00",
+      "net": "45644.00",
+      "arrears": []
+    }
+  },
+  {
+    "name": "std-esi-band",
+    "structure": "STD",
+    "regime": "NEW",
+    "declared": "0",
+    "inputs": {
+      "CTC_ANNUAL": "240000",
+      "CTC_MONTHLY": "20000.00",
+      "PERIOD_DAYS": "31",
+      "PAYABLE_DAYS": "30.5",
+      "LOP_DAYS": "0.5",
+      "ENCASH_DAYS": "0",
+      "REIMBURSEMENT": "0",
+      "MONTHS_LEFT_IN_FY": "12",
+      "YTD_TAXABLE": "0",
+      "YTD_TDS": "0"
+    },
+    "expected": {
+      "lines": {
+        "BASIC": "7871.00",
+        "HRA": "3936.00",
+        "SPECIAL": "6925.00",
+        "LEAVE_ENCASH": "0.00",
+        "ARREARS_PAY": "0.00",
+        "REIMB": "0.00",
+        "PF": "945.00",
+        "ESI": "141.00",
+        "PT": "200.00",
+        "ARREARS_DED": "0.00",
+        "TDS": "0.00"
+      },
+      "gross": "18732.00",
+      "deductions": "1286.00",
+      "net": "17446.00",
+      "arrears": []
+    }
+  },
+  {
+    "name": "std-retro-raise-arrears",
+    "structure": "STD",
+    "regime": "NEW",
+    "declared": "0",
+    "inputs": {
+      "CTC_ANNUAL": "1320000",
+      "CTC_MONTHLY": "110000.00",
+      "PERIOD_DAYS": "31",
+      "PAYABLE_DAYS": "31",
+      "LOP_DAYS": "0",
+      "ENCASH_DAYS": "0",
+      "REIMBURSEMENT": "0",
+      "MONTHS_LEFT_IN_FY": "11",
+      "YTD_TAXABLE": "98200.00",
+      "YTD_TDS": "4363.00"
+    },
+    "arrears": [
+      {
+        "period": "2026-04",
+        "structure": "STD",
+        "inputs": {
+          "CTC_ANNUAL": "1320000",
+          "CTC_MONTHLY": "110000.00",
+          "PERIOD_DAYS": "30",
+          "PAYABLE_DAYS": "30",
+          "LOP_DAYS": "0",
+          "ENCASH_DAYS": "0",
+          "REIMBURSEMENT": "0",
+          "MONTHS_LEFT_IN_FY": "12",
+          "YTD_TAXABLE": "0",
+          "YTD_TDS": "0",
+          "ARREARS": "0",
+          "ARREARS_DEDUCTIONS": "0"
+        },
+        "baseline": {
+          "BASIC": "40000.00",
+          "HRA": "20000.00",
+          "SPECIAL": "38200.00",
+          "LEAVE_ENCASH": "0.00",
+          "ARREARS_PAY": "0.00",
+          "REIMB": "0.00",
+          "PF": "1800.00",
+          "ESI": "0.00",
+          "PT": "200.00",
+          "ARREARS_DED": "0.00",
+          "TDS": "4363.00"
+        }
+      }
+    ],
+    "expected": {
+      "lines": {
+        "BASIC": "44000.00",
+        "HRA": "22000.00",
+        "SPECIAL": "42200.00",
+        "LEAVE_ENCASH": "0.00",
+        "ARREARS_PAY": "10000.00",
+        "REIMB": "0.00",
+        "PF": "1800.00",
+        "ESI": "0.00",
+        "PT": "200.00",
+        "ARREARS_DED": "0.00",
+        "TDS": "5608.00"
+      },
+      "gross": "118200.00",
+      "deductions": "7608.00",
+      "net": "110592.00",
+      "arrears": [
+        {
+          "period": "2026-04",
+          "component": "BASIC",
+          "kind": "EARNING",
+          "amount": "4000.00"
+        },
+        {
+          "period": "2026-04",
+          "component": "HRA",
+          "kind": "EARNING",
+          "amount": "2000.00"
+        },
+        {
+          "period": "2026-04",
+          "component": "SPECIAL",
+          "kind": "EARNING",
+          "amount": "4000.00"
+        }
+      ]
+    }
+  },
+  {
+    "name": "std-encashment-and-reimbursement-mid-year",
+    "structure": "STD",
+    "regime": "OLD",
+    "declared": "80000",
+    "inputs": {
+      "CTC_ANNUAL": "1800000",
+      "CTC_MONTHLY": "150000.00",
+      "PERIOD_DAYS": "31",
+      "PAYABLE_DAYS": "31",
+      "LOP_DAYS": "0",
+      "ENCASH_DAYS": "5",
+      "REIMBURSEMENT": "3500.50",
+      "MONTHS_LEFT_IN_FY": "6",
+      "YTD_TAXABLE": "891000",
+      "YTD_TDS": "98000"
+    },
+    "expected": {
+      "lines": {
+        "BASIC": "60000.00",
+        "HRA": "30000.00",
+        "SPECIAL": "58200.00",
+        "LEAVE_ENCASH": "10000.00",
+        "ARREARS_PAY": "0.00",
+        "REIMB": "3500.50",
+        "PF": "1800.00",
+        "ESI": "0.00",
+        "PT": "200.00",
+        "ARREARS_DED": "0.00",
+        "TDS": "37497.00"
+      },
+      "gross": "161700.50",
+      "deductions": "39497.00",
+      "net": "122203.50",
+      "arrears": []
+    }
+  },
+  {
+    "name": "std-mid-month-raise-prorated",
+    "structure": "STD",
+    "regime": "NEW",
+    "declared": "0",
+    "inputs": {
+      "CTC_ANNUAL": "1500000",
+      "CTC_MONTHLY": "117741.94",
+      "PERIOD_DAYS": "31",
+      "PAYABLE_DAYS": "31",
+      "LOP_DAYS": "0",
+      "ENCASH_DAYS": "0",
+      "REIMBURSEMENT": "0",
+      "MONTHS_LEFT_IN_FY": "10",
+      "YTD_TAXABLE": "0",
+      "YTD_TDS": "0"
+    },
+    "expected": {
+      "lines": {
+        "BASIC": "47097.00",
+        "HRA": "23549.00",
+        "SPECIAL": "45296.00",
+        "LEAVE_ENCASH": "0.00",
+        "ARREARS_PAY": "0.00",
+        "REIMB": "0.00",
+        "PF": "1800.00",
+        "ESI": "0.00",
+        "PT": "200.00",
+        "ARREARS_DED": "0.00",
+        "TDS": "5038.00"
+      },
+      "gross": "115942.00",
+      "deductions": "7038.00",
+      "net": "108904.00",
+      "arrears": []
+    }
+  },
+  {
+    "name": "std-march-true-up-never-negative",
+    "structure": "STD",
+    "regime": "NEW",
+    "declared": "0",
+    "inputs": {
+      "CTC_ANNUAL": "1200000",
+      "CTC_MONTHLY": "100000.00",
+      "PERIOD_DAYS": "31",
+      "PAYABLE_DAYS": "31",
+      "LOP_DAYS": "0",
+      "ENCASH_DAYS": "0",
+      "REIMBURSEMENT": "0",
+      "MONTHS_LEFT_IN_FY": "1",
+      "YTD_TAXABLE": "1100000",
+      "YTD_TDS": "90000"
+    },
+    "expected": {
+      "lines": {
+        "BASIC": "40000.00",
+        "HRA": "20000.00",
+        "SPECIAL": "38200.00",
+        "LEAVE_ENCASH": "0.00",
+        "ARREARS_PAY": "0.00",
+        "REIMB": "0.00",
+        "PF": "1800.00",
+        "ESI": "0.00",
+        "PT": "200.00",
+        "ARREARS_DED": "0.00",
+        "TDS": "0.00"
+      },
+      "gross": "98200.00",
+      "deductions": "2000.00",
+      "net": "96200.00",
+      "arrears": []
+    }
+  },
+  {
+    "name": "intern-lop-31-day-month",
+    "structure": "INTERN",
+    "regime": "NEW",
+    "declared": "0",
+    "inputs": {
+      "CTC_ANNUAL": "420000",
+      "CTC_MONTHLY": "35000.00",
+      "PERIOD_DAYS": "31",
+      "PAYABLE_DAYS": "28",
+      "LOP_DAYS": "3",
+      "ENCASH_DAYS": "0",
+      "REIMBURSEMENT": "1200",
+      "MONTHS_LEFT_IN_FY": "9",
+      "YTD_TAXABLE": "0",
+      "YTD_TDS": "0"
+    },
+    "expected": {
+      "lines": {
+        "STIPEND": "31612.90",
+        "ARREARS_PAY": "0.00",
+        "REIMB": "1200.00",
+        "TDS": "0.00"
+      },
+      "gross": "32812.90",
+      "deductions": "0.00",
+      "net": "32812.90",
+      "arrears": []
+    }
+  },
+  {
+    "name": "intern-high-stipend-new-regime",
+    "structure": "INTERN",
+    "regime": "NEW",
+    "declared": "0",
+    "inputs": {
+      "CTC_ANNUAL": "1080000",
+      "CTC_MONTHLY": "90000.00",
+      "PERIOD_DAYS": "30",
+      "PAYABLE_DAYS": "29.5",
+      "LOP_DAYS": "0.5",
+      "ENCASH_DAYS": "0",
+      "REIMBURSEMENT": "0",
+      "MONTHS_LEFT_IN_FY": "12",
+      "YTD_TAXABLE": "0",
+      "YTD_TDS": "0"
+    },
+    "expected": {
+      "lines": {
+        "STIPEND": "88500.00",
+        "ARREARS_PAY": "0.00",
+        "REIMB": "0.00",
+        "TDS": "3354.00"
+      },
+      "gross": "88500.00",
+      "deductions": "3354.00",
+      "net": "85146.00",
+      "arrears": []
+    }
+  }
+]
