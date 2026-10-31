@@ -75,7 +75,7 @@ class RunDomainTest {
         assertThat(m).isEqualByComparingTo("117741.94");
         var joiner = Proration.ctcMonthly(may, List.of(
                 new Proration.SalarySegment(LocalDate.of(2026, 5, 21), LocalDate.of(2026, 5, 31), new BigDecimal("1200000"))));
-        assertThat(joiner).isEqualByComparingTo("35483.87");
+        assertThat(joiner).isEqualByComparingTo("100000.00"); // the 11 of 31 days is PAYABLE_DAYS' job
     }
 
     @Test
