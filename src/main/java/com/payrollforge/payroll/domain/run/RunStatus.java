@@ -9,7 +9,7 @@ import java.util.Set;
  */
 public enum RunStatus {
     DRAFT(Map.of(RunEvent.START, "COMPUTING", RunEvent.CANCEL, "CANCELLED")),
-    COMPUTING(Map.of(RunEvent.CHUNKS_DONE, "REVIEW", RunEvent.START, "COMPUTING")),
+    COMPUTING(Map.of(RunEvent.CHUNKS_DONE, "REVIEW", RunEvent.START, "COMPUTING", RunEvent.CANCEL, "CANCELLED")),
     REVIEW(Map.of(RunEvent.INPUTS_CHANGED, "DRAFT", RunEvent.APPROVE, "APPROVED", RunEvent.CANCEL, "CANCELLED")),
     APPROVED(Map.of(RunEvent.INPUTS_CHANGED, "DRAFT", RunEvent.FINALIZE, "FINALIZED")),
     FINALIZED(Map.of(RunEvent.PAY, "PAID")),
