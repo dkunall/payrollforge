@@ -1,0 +1,115 @@
+spring:
+  application:
+    name: payrollforge
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    url: ${PAYROLLFORGE_DB_URL:jdbc:postgresql://localhost:5432/payrollforge}
+    username: ${PAYROLLFORGE_DB_USER:payrollforge}
+    password: ${PAYROLLFORGE_DB_PASSWORD:}
+    hikari:
+      maximum-pool-size: 20
+  flyway:
+    enabled: true
+  kafka:
+    bootstrap-servers: ${PAYROLLFORGE_KAFKA:localhost:9092}
+    producer:
+      acks: all
+      properties:
+        enable.idempotence: true
+        linger.ms: 5
+    consumer:
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+    listener:
+      ack-mode: record
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${PAYROLLFORGE_ISSUER:http://localhost:8080/default}
+  servlet:
+    multipart:
+      enabled: false
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  port: ${PAYROLLFORGE_PORT:8080}
+  shutdown: graceful
+  tomcat:
+    max-swallow-size: 2MB
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+payrollforge:
+  security:
+    hr-subjects: ${PAYROLLFORGE_HR_SUBJECTS:}
+    maker-subjects: ${PAYROLLFORGE_MAKER_SUBJECTS:}
+    checker-subjects: ${PAYROLLFORGE_CHECKER_SUBJECTS:}
+    device-subjects: ${PAYROLLFORGE_DEVICE_SUBJECTS:}
+  crypto:
+    field-key: ${PAYROLLFORGE_FIELD_KEY:}
+  storage:
+    endpoint: ${PAYROLLFORGE_S3_ENDPOINT:http://localhost:9000}
+    region: ${PAYROLLFORGE_S3_REGION:us-east-1}
+    bucket: ${PAYROLLFORGE_S3_BUCKET:payrollforge}
+    access-key: ${PAYROLLFORGE_S3_ACCESS_KEY:}
+    secret-key: ${PAYROLLFORGE_S3_SECRET_KEY:}
+  attendance:
+    full-day-minutes: 480
+    half-day-minutes: 240
+    future-skew: PT5M
+    max-age: P35D
+    batch-max: 500
+  approvals:
+    leave-hr-above-days: 3
+    claim-hr-above-amount: 5000
+  payroll:
+    entity: ${PAYROLLFORGE_ENTITY:PF01}
+    chunk-size: ${PAYROLLFORGE_CHUNK_SIZE:50}
+    parallelism: ${PAYROLLFORGE_PARALLELISM:8}
+    outlier-ratio: 0.20
+    arrears-lookback-months: 12
+    # Illustrative slab tables shaped like Indian income tax. NOT current law: no rebate, no surcharge,
+    # no marginal relief. Each run snapshots these, so changing them never alters a past run.
+    tax-rules:
+      id: illustrative-2026
+      regimes:
+        NEW:
+          standard-deduction: 75000
+          declaration-cap: 0
+          cess-rate: 0.04
+          slabs:
+            - { from: 0, up-to: 400000, rate: 0 }
+            - { from: 400000, up-to: 800000, rate: 0.05 }
+            - { from: 800000, up-to: 1200000, rate: 0.10 }
+            - { from: 1200000, up-to: 1600000, rate: 0.15 }
+            - { from: 1600000, up-to: 2000000, rate: 0.20 }
+            - { from: 2000000, up-to: 2400000, rate: 0.25 }
+            - { from: 2400000, rate: 0.30 }
+        OLD:
+          standard-deduction: 50000
+          declaration-cap: 150000
+          cess-rate: 0.04
+          slabs:
+            - { from: 0, up-to: 250000, rate: 0 }
+            - { from: 250000, up-to: 500000, rate: 0.05 }
+            - { from: 500000, up-to: 1000000, rate: 0.20 }
+            - { from: 1000000, rate: 0.30 }
+  checklists:
+    onboarding: [ "Sign offer letter", "Submit PAN and bank proof", "Laptop issued", "Policy acknowledgement" ]
+    offboarding: [ "Return laptop", "Revoke access", "Knowledge transfer", "Full and final settlement" ]
+  jobs:
+    enabled: ${PAYROLLFORGE_JOBS_ENABLED:true}
+    pdf-poll: PT1S
